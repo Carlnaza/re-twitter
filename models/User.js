@@ -24,6 +24,10 @@ const UserSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'tweet'
     }],
+    pinned_tweets: [{
+        type: Schema.Types.ObjectId,
+        ref: 'tweet'
+    }],
     liked_tweets: [{
         type: Schema.Types.ObjectId,
         ref: 'tweet'
