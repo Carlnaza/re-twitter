@@ -14,11 +14,13 @@ const TweetSchema = new Schema({
     }],
     liked_by: [{
         type: Schema.Types.ObjectId,
-        ref: 'user'
+        ref: 'user',
+        unique: true
     }],
     retweeted_by: [{
         type: Schema.Types.ObjectId,
-        ref: 'user'
+        ref: 'user',
+        unique: true
     }],
     created_by: {
         type: Schema.Types.ObjectId,

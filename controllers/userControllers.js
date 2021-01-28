@@ -86,15 +86,49 @@ router.post('/users/tweet', async (req, res) => {
 
 })
 
-// Liking a tweet
-router.put('/tweets/likes', async (req, res) => {
+// Interacting with a tweet
+router.put('/tweets/interactions', async (req, res) => {
 
     try {
 
-        // Add User to Tweet Likes
-        await Tweet.findByIdAndUpdate(req.body.tweet_id, { $push: { liked_by: req.body.user_id } })
-        // Add Tweet LIKED to Users Account
-        await User.findByIdAndUpdate(req.body.user_id, { $push: { liked_tweets: req.body.tweet_id } })
+        if (req.body.type === 'retweet') {
+            await Tweet.findByIdAndUpdate(req.body.tweet_id, { $addToSet: { retweeted_by: req.body.user_id } }, { "new": true })
+            await User.findByIdAndUpdate(req.body.user_id, { $addToSet: { re_tweets: req.body.tweet_id } }, { "new": true })
+        }
+        if (req.body.type === 'un-retweet') {
+            await Tweet.findByIdAndUpdate(req.body.tweet_id, { $pull: { retweeted_by: req.body.user_id } }, { "new": true })
+            await User.findByIdAndUpdate(req.body.user_id, { $pull: { re_tweets: req.body.tweet_id } }, { "new": true })
+        }
+        if (req.body.type === 'like') {
+            await Tweet.findByIdAndUpdate(req.body.tweet_id, { $addToSet: { liked_by: req.body.user_id } }, { "new": true })
+            await User.findByIdAndUpdate(req.body.user_id, { $addToSet: { liked_tweets: req.body.tweet_id } }, { "new": true })
+        }
+        if (req.body.type === 'un-like') {
+            await Tweet.findByIdAndUpdate(req.body.tweet_id, { $pull: { liked_by: req.body.user_id } }, { "new": true })
+            await User.findByIdAndUpdate(req.body.user_id, { $pull: { liked_tweets: req.body.tweet_id } }, { "new": true })
+        }
+
+    } catch (err) {
+
+        res.send(err)
+
+        return
+    }
+
+    // If successfuly added send 200
+    res.json({
+        status: 200,
+        message: `Successfully ${req.body.type}ed`
+    })
+
+})
+
+// Deleting a tweet
+router.delete('/tweets/delete', async (req, res) => {
+
+    try {
+
+        await Tweet.findByIdAndDelete(req.body.tweet_id)
 
     } catch (err) {
 
@@ -103,8 +137,11 @@ router.put('/tweets/likes', async (req, res) => {
         return
     }
 
-    // If successfuly
-    res.sendStatus(200)
+    // If successfully deleted send 200
+    res.json({
+        status: 200,
+        message: "Successfully deleted tweet"
+    })
 
 })
 

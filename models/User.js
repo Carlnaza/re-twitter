@@ -20,6 +20,7 @@ const UserSchema = new Schema({
         unique: true
     },
     verified: Boolean,
+    profile_img: String,
     tweets: [{
         type: Schema.Types.ObjectId,
         ref: 'tweet'
