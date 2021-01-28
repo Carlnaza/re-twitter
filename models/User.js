@@ -1,26 +1,38 @@
 const { model, Schema } = require('mongoose')
 
 const UserSchema = new Schema({
+    isAdmin: Boolean,
     name: {
         type: String,
         required: true
-     },
-    username: {
-       type: String,
-       unique: true, 
-       required: true
     },
-    email: {
+    date_of_birth: {
+        type: Date,
+        required: true,
+        trim: true
+    },
+    gender: String,
+    username: {
         type: String,
         unique: true,
         required: true
     },
+    email: {
+        type: String,
+        unique: true,
+        required: true,
+        trim: true
+    },
     phone: {
         type: Number,
-        unique: true
+        unique: true,
+        trim: true
     },
+    country: String,
+    languages: String,
     verified: Boolean,
     profile_img: String,
+    cover_photo: String,
     tweets: [{
         type: Schema.Types.ObjectId,
         ref: 'tweet'

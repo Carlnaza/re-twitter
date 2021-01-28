@@ -12,10 +12,13 @@ const TweetSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'tweet'
     }],
+    replying_to: {
+        type: Schema.Types.ObjectId,
+        ref: 'tweet'
+    },
     liked_by: [{
         type: Schema.Types.ObjectId,
-        ref: 'user',
-        unique: true
+        ref: 'user'
     }],
     retweeted_by: [{
         type: Schema.Types.ObjectId,
