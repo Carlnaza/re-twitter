@@ -11,6 +11,8 @@ router.post('/users/login', (req, res) => {
 
     User.authenticate()(lowCaseUName, req.body.password, (err, user) => {
         if (err) { res.json(err) }
+        // check if account has been verified
+        if (!user.isVerified) return res.status(401).send({ type: 'not-verified', msg: 'Your account has not been verified.' });
 
         res.json({
             message: `Successfully logged in ${user.username}`,
@@ -18,6 +20,7 @@ router.post('/users/login', (req, res) => {
         })
     })
 })
+
 
 // Registration Route
 router.post('/users/register', async (req, res) => {
@@ -56,6 +59,11 @@ router.post('/users/register', async (req, res) => {
     })
 
 })
+
+// Email verification routes
+// routes.post('/confirmation', userController.confirmationPost);
+// routes.post('/resend', userController.resendTokenPost);
+
 
 // Get all of User's Data to display in Settings Page
 router.get('/user', passport.authenticate("jwt"), (req, res) => {
