@@ -1,6 +1,6 @@
 // Dependencies
 import {
-  BrowserRouter as Router, Route, Switch
+  BrowserRouter as Router, Route, Switch, Redirect
 } from 'react-router-dom'
 import ProtectedPage from './ProtectedPage.js'
 
@@ -21,11 +21,16 @@ function App() {
 
         {/* Navbar end */}
         <Switch>
+          {/* Main App Pages */}
+          <Route exact path='/'>
+            <Redirect to='/home' />
+          </Route>
           <Route exact path='/home'>
             <ProtectedPage>
               <Home />
             </ProtectedPage>
           </Route>
+          {/* End Main App Pages */}
           <Route exact path='/login' component={Login} />
           <Route exact path='/register' component={Register} />
           <Route component={NotFound} />
