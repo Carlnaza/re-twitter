@@ -6,6 +6,7 @@ require('dotenv').config();
 // Load homepage for specific User
 router.get('/home/recent', passport.authenticate("jwt"), async (req, res) => {
 
+    // Unfinished, need to do a deep populate for all users being followed + users most recent tweets
     let user
     try {
 
@@ -39,17 +40,18 @@ router.get('/tweet/:id', async (req, res) => {
     }
 
     if (tweet === null) {
-        
+
         res.json({
             status: 404,
             message: "Tweet not found."
         })
 
-    } else {
-
-        res.json(tweet)
+        return
 
     }
+
+    res.json(tweet)
+
 
 })
 

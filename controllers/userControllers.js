@@ -22,20 +22,24 @@ router.post('/users/login', (req, res) => {
 
 // Registration Route
 router.post('/users/register', async (req, res) => {
-
+    
+    let user
     let lowCaseUName = req.body.username.toLowerCase()
 
-    let user
     try {
 
         user = await User.register(new User({
             isAdmin: false,
             verified: false,
             name: req.body.name,
-            email: req.body.email,
             date_of_birth: req.body.date_of_birth,
             phone: req.body.phone,
-            username: lowCaseUName
+            gender: req.body.gender,
+            email: req.body.email,
+            username: lowCaseUName,
+            languages: req.body.languages,
+            profile_img: req.body.profile_img,
+            cover_photo: req.body.profile_photo
         }), req.body.password)
 
     } catch (err) {
