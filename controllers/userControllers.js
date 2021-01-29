@@ -13,8 +13,7 @@ router.post('/users/login', (req, res) => {
         if (err) { res.json(err) }
 
         res.json({
-            isLoggedIn: !!user,
-            user: user,
+            message: `Successfully logged in ${user.username}`,
             token: jwt.sign({ id: user._id }, process.env.SECRET)
         })
     })
@@ -22,7 +21,7 @@ router.post('/users/login', (req, res) => {
 
 // Registration Route
 router.post('/users/register', async (req, res) => {
-    
+
     let user
     let lowCaseUName = req.body.username.toLowerCase()
 
@@ -66,6 +65,7 @@ router.get('/user', passport.authenticate("jwt"), (req, res) => {
 // Follow and Unfollow Users
 router.put('/users/follow', passport.authenticate("jwt"), async (req, res) => {
 
+    // Checks if USER being followed EXISTS
     let userFollowAttempt
     try {
 
@@ -104,8 +104,10 @@ router.put('/users/follow', passport.authenticate("jwt"), async (req, res) => {
             }
 
         } catch (err) {
+
             res.json(err)
             return
+            
         }
 
     }
