@@ -1,7 +1,9 @@
-const { User, Tweet } = require('../models')
+const { User, Tweet, VerifiedEmail } = require('../models')
 const router = require('express').Router()
 const passport = require('passport')
 const jwt = require('jsonwebtoken')
+const nodemailer = require('nodemailer')
+const crypto = require('crypto')
 require('dotenv').config();
 
 // Login Route - Creates a session
@@ -51,7 +53,39 @@ router.post('/users/register', async (req, res) => {
         return
 
     }
+    // Create a verification token for this user
+    var token = await new VerifiedEmail({
+        id: user._id,
+        token: crypto.randomBytes(16).toString('hex')
+    })
+   
+    // Save the verification token
+    token.save(function (err) {
+        if (err) { return res.status(500).send({ msg: err.message }); }
+    })
 
+    // generate email to verify email
+
+    let transporter = nodemailer.createTransport({
+        // set up email sender account
+        service: 'gmail',
+        auth: {
+            user: process.env.GMAIL_USER,
+            pass: process.env.GMAIL_PASSWORD
+        }
+    })
+    // email message content
+    var mailOptions = {  to: user.email, subject: 'Account Verification Token', text: 'Hello,\n\n' 
+   
+}
+
+    await transporter.sendMail(mailOptions, (err, response) => {
+        if (err) throw err;
+        console.log({ message: `Email has been sent to ${user.name}`})
+    })
+
+ 
+    // Confirm success
     res.json({
         status: 200,
         user_id: user._id,
@@ -60,9 +94,6 @@ router.post('/users/register', async (req, res) => {
 
 })
 
-// Email verification routes
-// routes.post('/confirmation', userController.confirmationPost);
-// routes.post('/resend', userController.resendTokenPost);
 
 
 // Get all of User's Data to display in Settings Page
@@ -115,7 +146,7 @@ router.put('/users/follow', passport.authenticate("jwt"), async (req, res) => {
 
             res.json(err)
             return
-            
+
         }
 
     }
@@ -137,7 +168,7 @@ router.post('/users/tweet', passport.authenticate("jwt"), async (req, res) => {
         message: req.body.message,
         created_by: req.user._id
     }
-
+    // length can be limited on front end using max length 280 on input 
     if (req.body.message.length > 280) {
         res.json({
             message: `Tweet must be 280 characters or less. (Currently: ${req.body.message.length})`
