@@ -75,7 +75,7 @@ router.post('/users/register', async (req, res) => {
         }
     })
 
-    let url = process.env.WHEREEVER_WE_HOST_THIS_FROM || 'http://localhost:3000/emailconfirm/'
+    let url = process.env.WHERE_EVER_WE_HOST_THIS_FROM || 'http://localhost:3000/verify/'
     // email message content
     var mailOptions = {
         to: user.email, subject: 'Account Verification Token', text: `Hello, ${user.name}.  Welcome to re-twitter.  You are just one step away from joining the re-twitter universe.  Just click the link below and enter your password again.\n
@@ -95,19 +95,20 @@ router.post('/users/register', async (req, res) => {
 })
 
 // confirm email 
-router.get('/users/emailconfirm/:token', async (req, res) => {
+router.put('/users/emailconfirm/:token', async (req, res) => {
     VerifiedEmail.findOne({ token: req.params.token }, function (err, token) {
+        console.log(token)
         // No token found
         if (!token) return res.status(400).send({ type: 'not-verified', msg: 'We were unable to find a valid token. Your token my have expired.' })
         // If we found a token, find a matching user
-        User.findOne({ email: req.body.email }, function (err, user) {
+        User.findById(token.id, function (err, user) {
             // message if user can't be found
             if (!user) return res.status(400).send({ msg: 'We were unable to find a user for this token.' })
             // message if this email ass already been verified
             if (user.isVerified) return res.status(400).send({ type: 'already-verified', msg: 'This user has already been verified.' })
             
             // Verify and save the user
-            user.isVerified = true;
+            user.isVerified = true
             user.save(function (err) {
                 if (err) { return res.status(500).send({ msg: err.message }); }
                 // Confirm success

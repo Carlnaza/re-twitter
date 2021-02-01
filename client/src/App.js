@@ -11,6 +11,7 @@ import Register from './pages/Register.js'
 import NotFound from './pages/404.js'
 import EmailConfirm from './pages/EmailConfirm'
 
+
 // Library
 
 function App() {
@@ -20,9 +21,9 @@ function App() {
       <div>
         {/* Navbar */}
 
-        {/* Navbar end */}
+        
+      {/* Navbar end */}
         <Switch>
-          <Route path='/emailconfirm' component={EmailConfirm} />
           {/* Main App Pages */}
           <Route exact path='/'>
             <Redirect to='/home' />
@@ -35,6 +36,7 @@ function App() {
           {/* End Main App Pages */}
           <Route exact path='/login' component={Login} />
           <Route exact path='/register' component={Register} />
+          <Route exact path='/verify/:token' component={EmailConfirm} />
           <Route component={NotFound} />
           
         </Switch>
