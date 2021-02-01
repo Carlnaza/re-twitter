@@ -27,6 +27,9 @@ h1, h2 {
   overflow-x: hidden; /* Hide horizontal scrollbar */
 }
 
+.modal-container {
+  width: 500px;
+}
 
 .black {
   background-color: black;

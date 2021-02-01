@@ -1,6 +1,6 @@
 // Dependencies
 import {
-  BrowserRouter as Router, Route, Switch, Redirect
+Route, Switch, Redirect
 } from 'react-router-dom'
 import ProtectedPage from './ProtectedPage.js'
 
@@ -15,29 +15,27 @@ import NotFound from './pages/404.js'
 function App() {
 
   return (
-    <Router>
-      <div>
-        {/* Navbar */}
+    <div>
+      {/* Navbar */}
 
-        {/* Navbar end */}
-        <Switch>
-          {/* Main App Pages */}
-          <Route exact path='/'>
-            <Redirect to='/home' />
-          </Route>
-          <Route exact path='/home'>
-            <ProtectedPage>
-              <Home />
-            </ProtectedPage>
-          </Route>
-          {/* End Main App Pages */}
-          <Route exact path='/login' component={Login} />
-          <Route exact path='/register' component={Register} />
-          <Route component={NotFound} />
-        </Switch>
-        {/* Footer */}
-      </div>
-    </Router>
+      {/* Navbar end */}
+      <Switch>
+        {/* Main App Pages */}
+        <Route exact path='/'>
+          <Redirect to='/home' />
+        </Route>
+        <Route exact path='/home'>
+          <ProtectedPage>
+            <Home />
+          </ProtectedPage>
+        </Route>
+        {/* End Main App Pages */}
+        <Route exact path='/login' component={Login} />
+        <Route exact path='/register' component={Register} />
+        <Route component={NotFound} />
+      </Switch>
+      {/* Footer */}
+    </div>
   );
 }
 

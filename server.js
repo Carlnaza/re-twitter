@@ -8,7 +8,10 @@ const { Strategy: JWTStrategy, ExtractJwt } = require('passport-jwt')
 
 const app = express()
 
-app.use(express.static(join(__dirname, 'client', 'build')))
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(join(__dirname, 'client', 'build')))
+}
+
 app.use(express.urlencoded({ extended: true }))
 app.use(passport.initialize())
 app.use(passport.session())
@@ -28,9 +31,11 @@ passport.use(new JWTStrategy({
 
 app.use(require('./controllers'))
 
-// app.get('/*', (req, res) => {
-//   res.sendFile(join(__dirname, 'client', 'build', 'index.html'))
-// })
+if (process.env.NODE_ENV === 'production') {
+  app.get('/*', (req, res) => {
+    res.sendFile(join(__dirname, 'client', 'build', 'index.html'))
+  })
+}
 
 require('./config')
   .then(() => app.listen(process.env.PORT || 3001))
