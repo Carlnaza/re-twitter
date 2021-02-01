@@ -11,3 +11,27 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+h1, h2 {
+  font-family: 'Fredoka One', cursive;
+  color: rgba(217,217,217,1.00);
+}
+
+.max-screen {
+  height: 100vh !important;
+  overflow: hidden;
+}
+
+.no-scroll-bar::-webkit-scrollbar {
+  overflow-y: hidden; /* Hide vertical scrollbar */
+  overflow-x: hidden; /* Hide horizontal scrollbar */
+}
+
+
+.black {
+  background-color: black;
+}
+
+.gray {
+  background-color: #3E3E3E;
+}
