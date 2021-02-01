@@ -9,6 +9,7 @@ import Home from './pages/Home.js'
 import Login from './pages/Login.js'
 import Register from './pages/Register.js'
 import NotFound from './pages/404.js'
+import EmailConfirm from './pages/EmailConfirm'
 
 // Library
 
@@ -21,6 +22,7 @@ function App() {
 
         {/* Navbar end */}
         <Switch>
+          <Route path='/emailconfirm' component={EmailConfirm} />
           <Route exact path='/home'>
             <ProtectedPage>
               <Home />
@@ -29,6 +31,7 @@ function App() {
           <Route exact path='/login' component={Login} />
           <Route exact path='/register' component={Register} />
           <Route component={NotFound} />
+          
         </Switch>
         {/* Footer */}
       </div>

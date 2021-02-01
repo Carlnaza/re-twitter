@@ -58,7 +58,7 @@ router.post('/users/register', async (req, res) => {
         id: user._id,
         token: crypto.randomBytes(16).toString('hex')
     })
-   
+
     // Save the verification token
     token.save(function (err) {
         if (err) { return res.status(500).send({ msg: err.message }); }
@@ -74,27 +74,52 @@ router.post('/users/register', async (req, res) => {
             pass: process.env.GMAIL_PASSWORD
         }
     })
+
+    let url = process.env.WHEREEVER_WE_HOST_THIS_FROM || 'http://localhost:3000/emailconfirm/'
     // email message content
-    var mailOptions = {  to: user.email, subject: 'Account Verification Token', text: 'Hello,\n\n' 
-   
-}
+    var mailOptions = {
+        to: user.email, subject: 'Account Verification Token', text: `Hello, ${user.name}.  Welcome to re-twitter.  You are just one step away from joining the re-twitter universe.  Just click the link below and enter your password again.\n
+    \n
+    ${url}${token.token}\n
+    \n`
+
+    }
 
     await transporter.sendMail(mailOptions, (err, response) => {
         if (err) throw err;
-        console.log({ message: `Email has been sent to ${user.name}`})
+        res.json({ message: `Email has been sent to ${user.name} at ${user.email}` })
     })
 
- 
-    // Confirm success
-    res.json({
-        status: 200,
-        user_id: user._id,
-        message: "User successfully created"
-    })
 
+    
 })
 
-
+// confirm email 
+router.get('/users/emailconfirm/:token', async (req, res) => {
+    VerifiedEmail.findOne({ token: req.params.token }, function (err, token) {
+        // No token found
+        if (!token) return res.status(400).send({ type: 'not-verified', msg: 'We were unable to find a valid token. Your token my have expired.' })
+        // If we found a token, find a matching user
+        User.findOne({ email: req.body.email }, function (err, user) {
+            // message if user can't be found
+            if (!user) return res.status(400).send({ msg: 'We were unable to find a user for this token.' })
+            // message if this email ass already been verified
+            if (user.isVerified) return res.status(400).send({ type: 'already-verified', msg: 'This user has already been verified.' })
+            
+            // Verify and save the user
+            user.isVerified = true;
+            user.save(function (err) {
+                if (err) { return res.status(500).send({ msg: err.message }); }
+                // Confirm success
+                res.json({
+                    status: 200,
+                    user_id: user._id,
+                    message: "The account has been verified.Please log in."
+                })
+            })
+        })
+    })
+})
 
 // Get all of User's Data to display in Settings Page
 router.get('/user', passport.authenticate("jwt"), (req, res) => {
