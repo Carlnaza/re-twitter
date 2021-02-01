@@ -68,7 +68,7 @@ export default function Login() {
     return (
         <>
             {
-                localStorage.getItem('token') ? <Redirect to='/home' /> :
+                // localStorage.getItem('token') ? <Redirect to='/home' /> :
                     <div>
                         <Modal isOpen={modal} toggle={toggle}>
                             <div className="gray">

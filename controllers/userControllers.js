@@ -1,7 +1,9 @@
-const { User, Tweet } = require('../models')
+const { User, Tweet, VerifiedEmail } = require('../models')
 const router = require('express').Router()
 const passport = require('passport')
 const jwt = require('jsonwebtoken')
+const nodemailer = require('nodemailer')
+const crypto = require('crypto')
 require('dotenv').config();
 
 // Login Route - Creates a session
@@ -11,6 +13,8 @@ router.post('/users/login', (req, res) => {
 
     User.authenticate()(lowCaseUName, req.body.password, (err, user) => {
         if (err) { res.json(err) }
+        // check if account has been verified
+        if (!user.isVerified) return res.status(401).send({ type: 'not-verified', msg: 'Your account has not been verified.' });
 
         res.json({
             message: `Successfully logged in ${user.username}`,
@@ -18,6 +22,7 @@ router.post('/users/login', (req, res) => {
         })
     })
 })
+
 
 // Registration Route
 router.post('/users/register', async (req, res) => {
@@ -48,13 +53,73 @@ router.post('/users/register', async (req, res) => {
         return
 
     }
-
-    res.json({
-        status: 200,
-        user_id: user._id,
-        message: "User successfully created"
+    // Create a verification token for this user
+    var token = await new VerifiedEmail({
+        id: user._id,
+        token: crypto.randomBytes(16).toString('hex')
     })
 
+    // Save the verification token
+    token.save(function (err) {
+        if (err) { return res.status(500).send({ msg: err.message }); }
+    })
+
+    // generate email to verify email
+
+    let transporter = nodemailer.createTransport({
+        // set up email sender account
+        service: 'gmail',
+        auth: {
+            user: process.env.GMAIL_USER,
+            pass: process.env.GMAIL_PASSWORD
+        }
+    })
+
+    let url = process.env.WHERE_EVER_WE_HOST_THIS_FROM || 'http://localhost:3000/verify/'
+    // email message content
+    var mailOptions = {
+        to: user.email, subject: 'Account Verification Token', text: `Hello, ${user.name}.  Welcome to re-twitter.  You are just one step away from joining the re-twitter universe.  Just click the link below and enter your password again.\n
+    \n
+    ${url}${token.token}\n
+    \n`
+
+    }
+
+    await transporter.sendMail(mailOptions, (err, response) => {
+        if (err) throw err;
+        res.json({ message: `Email has been sent to ${user.name} at ${user.email}` })
+    })
+
+
+    
+})
+
+// confirm email 
+router.put('/users/emailconfirm/:token', async (req, res) => {
+    VerifiedEmail.findOne({ token: req.params.token }, function (err, token) {
+        console.log(token)
+        // No token found
+        if (!token) return res.status(400).send({ type: 'not-verified', msg: 'We were unable to find a valid token. Your token my have expired.' })
+        // If we found a token, find a matching user
+        User.findById(token.id, function (err, user) {
+            // message if user can't be found
+            if (!user) return res.status(400).send({ msg: 'We were unable to find a user for this token.' })
+            // message if this email ass already been verified
+            if (user.isVerified) return res.status(400).send({ type: 'already-verified', msg: 'This user has already been verified.' })
+            
+            // Verify and save the user
+            user.isVerified = true
+            user.save(function (err) {
+                if (err) { return res.status(500).send({ msg: err.message }); }
+                // Confirm success
+                res.json({
+                    status: 200,
+                    user_id: user._id,
+                    message: "The account has been verified.Please log in."
+                })
+            })
+        })
+    })
 })
 
 // Get all of User's Data to display in Settings Page
@@ -107,7 +172,7 @@ router.put('/users/follow', passport.authenticate("jwt"), async (req, res) => {
 
             res.json(err)
             return
-            
+
         }
 
     }
@@ -129,7 +194,7 @@ router.post('/users/tweet', passport.authenticate("jwt"), async (req, res) => {
         message: req.body.message,
         created_by: req.user._id
     }
-
+    // length can be limited on front end using max length 280 on input 
     if (req.body.message.length > 280) {
         res.json({
             message: `Tweet must be 280 characters or less. (Currently: ${req.body.message.length})`

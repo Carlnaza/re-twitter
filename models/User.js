@@ -28,6 +28,7 @@ const UserSchema = new Schema({
         unique: true,
         trim: true
     },
+    isVerified: { type: Boolean, default: false },
     country: String,
     languages: String,
     verified: Boolean,
