@@ -10,8 +10,15 @@ import {
 
 export default function EmailConfirm({ match }) {
 
-  const verifyEmail = () => {
-    User.verifyEmail(match.params.token)
+  const verifyEmail = async () => {
+    let token = {
+      token: match.params.token
+    }
+    await User.verifyEmail(token)
+      .then(({ data }) => {
+        console.log(data)
+      })
+      .catch(err => console.log(err))
   }
 
   return (

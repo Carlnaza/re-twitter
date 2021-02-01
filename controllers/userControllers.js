@@ -55,7 +55,7 @@ router.post('/users/register', async (req, res) => {
     }
     // Create a verification token for this user
     var token = await new VerifiedEmail({
-        id: user._id,
+        userId: user._id,
         token: crypto.randomBytes(16).toString('hex')
     })
 
@@ -86,31 +86,34 @@ router.post('/users/register', async (req, res) => {
     }
 
     await transporter.sendMail(mailOptions, (err, response) => {
+
         if (err) throw err;
+
         res.json({ message: `Email has been sent to ${user.name} at ${user.email}` })
     })
 
 
-    
+
 })
 
 // confirm email 
-router.put('/users/emailconfirm/:token', async (req, res) => {
-    VerifiedEmail.findOne({ token: req.params.token }, function (err, token) {
+router.put('/user/verify', (req, res) => {
+    console.log(req.body.token)
+    VerifiedEmail.findOne({ token: req.body.token }, function (err, token) {
         console.log(token)
         // No token found
-        if (!token) return res.status(400).send({ type: 'not-verified', msg: 'We were unable to find a valid token. Your token my have expired.' })
+        if (!token) return res.json({ status: 400, type: 'not-verified', msg: 'We were unable to find a valid token. Your token my have expired.' })
         // If we found a token, find a matching user
-        User.findById(token.id, function (err, user) {
+        User.findById(token.userId, function (err, user) {
             // message if user can't be found
-            if (!user) return res.status(400).send({ msg: 'We were unable to find a user for this token.' })
+            if (!user) return res.json({ status: 400, msg: 'We were unable to find a user for this token.' })
             // message if this email ass already been verified
-            if (user.isVerified) return res.status(400).send({ type: 'already-verified', msg: 'This user has already been verified.' })
-            
+            if (user.isVerified) return res.json({ status: 400, type: 'already-verified', msg: 'This user has already been verified.' })
+
             // Verify and save the user
             user.isVerified = true
             user.save(function (err) {
-                if (err) { return res.status(500).send({ msg: err.message }); }
+                if (err) { return res.json({ status: 500, msg: err.message }); }
                 // Confirm success
                 res.json({
                     status: 200,
