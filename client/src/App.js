@@ -2,7 +2,7 @@
 import {
   Route, Switch, Redirect
 } from 'react-router-dom'
-import ProtectedPage from './ProtectedPage.js'
+import ProtectedPage from './utils/ProtectedPage.js'
 
 // Pages
 import Home from './pages/Home.js'

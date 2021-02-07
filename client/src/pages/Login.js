@@ -9,29 +9,19 @@ import {
     Button,
     Modal,
     ModalHeader,
-    ModalFooter
+    ModalFooter,
+    Alert
 } from 'reactstrap'
 
-// Context
+// Utils
 import User from '../utils/User/UserAPI/UserAPI'
+import FormContext from '../utils/FormContext.js'
+import FormValidation from '../utils/FormValidation.js'
 
 export default function Login() {
 
-    let year = new Date().getFullYear()
     const [modal, setModal] = useState(false);
-    const [modalSteps, setModalSteps] = useState(1)
-
-    const [registerState, setRegisterState] = useState({
-        name: '',
-        phone: '',
-        day: 'Day...',
-        month: 'Month...',
-        year: ''
-    })
-
-    const [nameConfirm, setNameConfirm] = useState(false)
-    const [phoneConfirm, setPhoneConfirm] = useState(false)
-    const [yearConfirm, setYearConfirm] = useState(false)
+    const { handleInputChange, handleSubmit, values, errors, disabled } = FormContext(FormValidation)
 
     const findOneUser = () => {
         User.findUser('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwMTMwNzhiYzllZGM5NWE0NGQ3YjQwYyIsImlhdCI6MTYxMjIxNjUyM30.izDMwyU8L9DM1CqeFcjeiOqM5J5XsO66QACZFW0mAXQ')
@@ -41,23 +31,7 @@ export default function Login() {
             .catch(err => console.log(err))
     }
 
-    const register = () => {
-
-        if (modalSteps === 1) {
-
-            if (registerState.name === '') { setNameConfirm(true) }
-            if (registerState.phone === '') { setPhoneConfirm(true) }
-            if (year - registerState.year < 13) { setYearConfirm(true) }
-            if (nameConfirm && phoneConfirm && yearConfirm) { setModalSteps(2) }
-        }
-    }
-
-    const inputChange = (event) => {
-        setRegisterState({ ...registerState, [event.target.name]: event.target.value })
-    }
-
     const toggle = () => {
-        setModalSteps(1)
         setModal(!modal)
     }
 
@@ -73,133 +47,173 @@ export default function Login() {
                                     <p>Create your account</p>
                                 </div>
                             </ModalHeader>
-                            {
-                                modalSteps === 1 ?
-                                    <Container>
+                            <Container>
+                                {
+                                    errors.validation && <Alert color="danger" className="mt-3">{errors.validation}</Alert>
+                                }
+                                <input
+                                    type="text"
+                                    className={`form-control form-control-lg mt-4`}
+                                    placeholder="Username"
+                                    name="username"
+                                    value={values.username}
+                                    disabled={disabled ? true : false}
+                                    onChange={handleInputChange}
+                                />
+                                <input
+                                    type="text"
+                                    className={`form-control form-control-lg mt-4`}
+                                    placeholder="Full Name"
+                                    name="name"
+                                    value={values.name}
+                                    disabled={disabled ? true : false}
+                                    onChange={handleInputChange}
+                                />
+                                {
+                                    errors.name && <p className="text-danger">{errors.name}</p>
+                                }
+                                <input
+                                    type="tel"
+                                    className={`form-control form-control-lg mt-4`}
+                                    placeholder="Phone"
+                                    maxLength="10"
+                                    name="phone"
+                                    value={values.phone}
+                                    onChange={handleInputChange}
+                                    disabled={disabled ? true : false}
+                                />
+                                {
+                                    errors.phone && <p className="text-danger">{errors.phone}</p>
+                                }
+                                <input
+                                    type="text"
+                                    className={`form-control form-control-lg mt-4`}
+                                    placeholder="Email"
+                                    name="email"
+                                    value={values.email}
+                                    onChange={handleInputChange}
+                                    disabled={disabled ? true : false}
+                                />
+                                {
+                                    errors.email && <p className="text-danger">{errors.email}</p>
+                                }
+                                <input
+                                    type="password"
+                                    className={`form-control form-control-lg mt-4`}
+                                    placeholder="Password"
+                                    name="password"
+                                    value={values.password}
+                                    onChange={handleInputChange}
+                                    disabled={disabled ? true : false}
+                                />
+                                {
+                                    errors.password && <p className="text-danger">{errors.password}</p>
+                                }
+                                <input
+                                    type="password"
+                                    className={`form-control form-control-lg mt-4`}
+                                    placeholder="Repeat Password"
+                                    name="password2"
+                                    value={values.password2}
+                                    onChange={handleInputChange}
+                                    disabled={disabled ? true : false}
+                                />
+                                {
+                                    errors.password2 && <p className="text-danger">{errors.password2}</p>
+                                }
+                                <p className="font-weight-bolder text-white mt-4 mb-0">Date of Birth</p>
+                                <p className="text-muted">This will not be shown publicly. Confirm your own age, even if this account is for a business, a pet, or something else.</p>
+                                {
+                                    errors.year && <p className="text-danger mt-2 mb-0">{errors.year}</p>
+                                }
+                                <div className="form-row">
+                                    <div className="form-group col-md-5">
+                                        <select
+                                            className="form-control form-control-lg"
+                                            name="day"
+                                            value={values.day}
+                                            onChange={handleInputChange}
+                                            disabled={disabled ? true : false}
+                                        >
+                                            <option defaultValue="January">January</option>
+                                            <option value="February">February</option>
+                                            <option value="March">March</option>
+                                            <option value="April">April</option>
+                                            <option value="May">May</option>
+                                            <option value="June">June</option>
+                                            <option value="July">July</option>
+                                            <option value="August">August</option>
+                                            <option value="September">September</option>
+                                            <option value="October">October</option>
+                                            <option value="November">November</option>
+                                            <option value="December">December</option>
+                                        </select>
+                                    </div>
+                                    <div className="form-group col-md-3">
+                                        <select
+                                            className="form-control form-control-lg"
+                                            name="month"
+                                            value={values.month}
+                                            onChange={handleInputChange}
+                                            disabled={disabled ? true : false}
+                                        >
+                                            <option defaultValue={1}>1</option>
+                                            <option value={2}>2</option>
+                                            <option value={3}>3</option>
+                                            <option value={4}>4</option>
+                                            <option value={5}>5</option>
+                                            <option value={6}>6</option>
+                                            <option value={7}>7</option>
+                                            <option value={8}>8</option>
+                                            <option value={9}>9</option>
+                                            <option value={10}>10</option>
+                                            <option value={11}>11</option>
+                                            <option value={12}>12</option>
+                                            <option value={13}>13</option>
+                                            <option value={14}>14</option>
+                                            <option value={15}>15</option>
+                                            <option value={16}>16</option>
+                                            <option value={17}>17</option>
+                                            <option value={18}>18</option>
+                                            <option value={19}>19</option>
+                                            <option value={20}>20</option>
+                                            <option value={21}>21</option>
+                                            <option value={22}>22</option>
+                                            <option value={23}>23</option>
+                                            <option value={24}>24</option>
+                                            <option value={25}>25</option>
+                                            <option value={26}>26</option>
+                                            <option value={27}>27</option>
+                                            <option value={28}>28</option>
+                                            <option value={29}>29</option>
+                                            <option value={30}>30</option>
+                                            <option value={31}>31</option>
+                                        </select>
+                                    </div>
+                                    <div className="form-group col-md-4">
                                         <input
                                             type="text"
-                                            className={`form-control form-control-lg mt-4 ${nameConfirm ? "is-invalid" : null }`}
-                                            placeholder="Name"
-                                            name="name"
-                                            value={registerState.name}
-                                            onChange={inputChange}
+                                            className="form-control form-control-lg"
+                                            placeholder="Year"
+                                            maxLength="4"
+                                            name="year"
+                                            value={values.year}
+                                            onChange={handleInputChange}
+                                            disabled={disabled ? true : false}
                                         />
-                                        {
-                                            nameConfirm ? <p className="text-danger">Please enter a valid Name.</p> : null
-                                        }
-                                        <input
-                                            type="phone"
-                                            className={`form-control form-control-lg mt-4 ${phoneConfirm ? "is-invalid" : null}`}
-                                            placeholder="Phone"
-                                            maxLength="10"
-                                            name="phone"
-                                            value={registerState.phone}
-                                            onChange={inputChange}
-                                        />
-                                        {
-                                            phoneConfirm ? <p className="text-danger">Please enter a valid Phone Number.</p> : null
-                                        }
-                                        <p className="font-weight-bolder text-white mt-4 mb-0">Date of Birth</p>
-                                        <p className="text-muted">This will not be shown publicly. Confirm your own age, even if this account is for a business, a pet, or something else.</p>
-                                        {
-                                            yearConfirm ? <p className="text-danger mt-2 mb-0">You must be 13 years or older to register on this site.</p> : null
-                                        }
-                                        <div className="form-row">
-                                            <div className="form-group col-md-5">
-                                                <select
-                                                    className="form-control form-control-lg"
-                                                    name="day"
-                                                    value={registerState.day}
-                                                    onChange={inputChange}
-                                                >
-                                                    <option value="January">January</option>
-                                                    <option value="February">February</option>
-                                                    <option value="March">March</option>
-                                                    <option value="April">April</option>
-                                                    <option value="May">May</option>
-                                                    <option value="June">June</option>
-                                                    <option value="July">July</option>
-                                                    <option value="August">August</option>
-                                                    <option value="September">September</option>
-                                                    <option value="October">October</option>
-                                                    <option value="November">November</option>
-                                                    <option value="December">December</option>
-                                                </select>
-                                            </div>
-                                            <div className="form-group col-md-3">
-                                                <select
-                                                    className="form-control form-control-lg"
-                                                    name="month"
-                                                    value={registerState.month}
-                                                    onChange={inputChange}
-                                                >
-                                                    <option value={1}>1</option>
-                                                    <option value={2}>2</option>
-                                                    <option value={3}>3</option>
-                                                    <option value={4}>4</option>
-                                                    <option value={5}>5</option>
-                                                    <option value={6}>6</option>
-                                                    <option value={7}>7</option>
-                                                    <option value={8}>8</option>
-                                                    <option value={9}>9</option>
-                                                    <option value={10}>10</option>
-                                                    <option value={11}>11</option>
-                                                    <option value={12}>12</option>
-                                                    <option value={13}>13</option>
-                                                    <option value={14}>14</option>
-                                                    <option value={15}>15</option>
-                                                    <option value={16}>16</option>
-                                                    <option value={17}>17</option>
-                                                    <option value={18}>18</option>
-                                                    <option value={19}>19</option>
-                                                    <option value={20}>20</option>
-                                                    <option value={21}>21</option>
-                                                    <option value={22}>22</option>
-                                                    <option value={23}>23</option>
-                                                    <option value={24}>24</option>
-                                                    <option value={25}>25</option>
-                                                    <option value={26}>26</option>
-                                                    <option value={27}>27</option>
-                                                    <option value={28}>28</option>
-                                                    <option value={29}>29</option>
-                                                    <option value={30}>30</option>
-                                                    <option value={31}>31</option>
-                                                </select>
-                                            </div>
-                                            <div className="form-group col-md-4">
-                                                <input
-                                                    type="text"
-                                                    className="form-control form-control-lg"
-                                                    placeholder="Year"
-                                                    maxLength="4"
-                                                    name="year"
-                                                    value={registerState.year}
-                                                    onChange={inputChange}
-                                                />
-                                            </div>
-                                        </div>
-                                    </Container>
-                                    :
-                                    null
-                            }
+                                    </div>
+                                </div>
+                            </Container>
                             <ModalFooter>
-                                {
-                                    nameConfirm && phoneConfirm && yearConfirm ?
-                                        <Button
-                                            className="float-right rounded-pill"
-                                            color="primary"
-                                            onClick={() => register()}
+                                <Button
+                                    className="float-right rounded-pill"
+                                    color="primary"
+                                    onClick={() => handleSubmit()}
+                                >
+                                    Register
+                                </Button> :
 
-                                        >Next
-                                        </Button>
-                                        :
-                                        <Button
-                                            className="float-right rounded-pill"
-                                            color="primary"
-                                            disabled
-                                        >Next
-                                        </Button>
-                                }
+
 
                             </ModalFooter>
                         </div>
