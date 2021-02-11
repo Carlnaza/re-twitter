@@ -1,14 +1,15 @@
 import { useState } from 'react'
 
 // Utils
-import Tweet from './TweetAPI'
 import FormContext from './FormContext.js'
+import Tweet from './TweetAPI'
 
 const HomeContext = () => {
 
     const {
         setDisabled,
-        setSuccess
+        setErrors,
+        errors
     } = FormContext()
 
     const [tweet, setTweet] = useState({
@@ -23,11 +24,17 @@ const HomeContext = () => {
     const submitTweet = async () => {
         setDisabled(true)
         let { data: tweetRes } = await Tweet.submit(tweet.input)
-        if (tweetRes.status === 200) {
+        if (tweetRes.status === 400) {
+            let errorObj = {
+                tweetInput: tweetRes.message
+            }
+            console.log(errorObj)
+            setErrors(errorObj)
+        } else if (tweetRes.status === 200) {
             setDisabled(false)
             setTweet({ input: '', image: '' })
         }
-        console.log(tweetRes)
+
     }
 
     return {

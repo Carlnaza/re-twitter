@@ -9,7 +9,8 @@ import {
     Container,
     Row,
     Col,
-    Button
+    Button,
+    Alert
 } from 'reactstrap'
 import './non-global.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -31,7 +32,8 @@ export default function Home() {
     } = HomeContext()
 
     const {
-        disabled
+        disabled,
+        errors
     } = FormContext()
 
 
@@ -46,6 +48,9 @@ export default function Home() {
                     <ContentHeader title="Home" />
                     {/* Tweet Form */}
                     <div className="p-4 border-bottom">
+                        {
+                            errors.tweetInput && <Alert color="danger">{errors.tweetInput}</Alert>
+                        }
                         <textarea
                             className="form-control cs-textarea"
                             id="exampleFormControlTextarea1"

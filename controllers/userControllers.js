@@ -278,6 +278,17 @@ router.post('/users/tweet', passport.authenticate("jwt"), async (req, res) => {
         message: req.body.message,
         created_by: req.user._id
     }
+
+    if (!req.body.message) {
+        res.json({
+            status: 400,
+            message: "Cannot tweet, input is empty."
+        })
+
+        return
+    }
+
+
     // length can be limited on front end using max length 280 on input 
     if (req.body.message.length > 280) {
         res.json({

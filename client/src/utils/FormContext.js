@@ -1,4 +1,6 @@
 import { useState } from 'react'
+
+// Utils
 import User from './UserAPI'
 
 const FormContext = () => {
@@ -98,6 +100,7 @@ const FormContext = () => {
         loginValues,
         values,
         errors,
+        setErrors,
         disabled,
         setDisabled,
         registerStatus,
