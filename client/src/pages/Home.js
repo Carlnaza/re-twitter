@@ -19,28 +19,24 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 // Context
-import HomeContext from '../utils/HomeContext.js'
 import FormContext from '../utils/FormContext.js'
 
 
 export default function Home() {
 
     const {
+        disabled,
+        errors,
         handleTweetInputChange,
         tweet,
         submitTweet
-    } = HomeContext()
-
-    const {
-        disabled,
-        errors
     } = FormContext()
 
 
     return (
         <Container>
             <Row>
-                <Sidebar />
+                <Sidebar disabled={disabled} />
                 {/* Tweet Card Form */}
                 <Col
                     className="cs-content p-0"
@@ -62,8 +58,12 @@ export default function Home() {
                             disabled={disabled ? true : false}
                         />
                         <hr />
+                        <label for="upload-photo">
+                        <FontAwesomeIcon size="lg" icon={faImage} />
+
+                        </label>
+                        <input type="file" name="photo" id="upload-photo" />
                         <Button className="cs-btn-default rounded-circle">
-                            <FontAwesomeIcon size="lg" icon={faImage} />
                         </Button>
                         <Button
                             className="rounded-pill float-right"

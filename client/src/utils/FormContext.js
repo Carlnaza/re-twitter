@@ -2,8 +2,14 @@ import { useState } from 'react'
 
 // Utils
 import User from './UserAPI'
+import Tweet from './TweetAPI'
 
 const FormContext = () => {
+
+    const [tweet, setTweet] = useState({
+        input: '',
+        image: ''
+    })
 
     const [values, setValues] = useState({
         username: '',
@@ -27,6 +33,11 @@ const FormContext = () => {
     const [disabled, setDisabled] = useState(false)
     const [success, setSuccess] = useState(false)
     const [registerStatus, setRegisterStatus] = useState(false)
+
+    const handleTweetInputChange = (event) => {
+        setTweet({ ...tweet, [event.target.name]: event.target.value })
+        setErrors({})
+    }
 
     const handleRegisterInputChange = (event) => {
         setValues({ ...values, [event.target.name]: event.target.value })
@@ -63,6 +74,25 @@ const FormContext = () => {
                 console.log(response)
             }
         }, 1000)
+
+    }
+
+    const submitTweet = async () => {
+        setDisabled(true)
+
+        setTimeout(async () => {
+            let { data: tweetRes } = await Tweet.submit(tweet.input)
+            if (tweetRes.status === 400) {
+                let errorObj = {
+                    tweetInput: tweetRes.message
+                }
+                setErrors(errorObj)
+                setDisabled(false)
+            } else if (tweetRes.status === 200) {
+                setDisabled(false)
+                setTweet({ input: '', image: '' })
+            }
+        }, 250)
 
     }
 
@@ -104,10 +134,14 @@ const FormContext = () => {
         disabled,
         setDisabled,
         registerStatus,
+        setRegisterStatus,
         modal,
         setModal,
         success,
-        setSuccess
+        setSuccess,
+        tweet,
+        handleTweetInputChange,
+        submitTweet
     }
 }
 

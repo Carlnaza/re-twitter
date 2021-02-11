@@ -13,7 +13,6 @@ import {
 } from 'reactstrap'
 
 // Utils
-import User from '../utils/UserAPI'
 import FormContext from '../utils/FormContext.js'
 
 export default function Login() {
@@ -32,14 +31,6 @@ export default function Login() {
         setModal,
         success
     } = FormContext()
-
-    const findOneUser = () => {
-        User.findUser('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwMTMwNzhiYzllZGM5NWE0NGQ3YjQwYyIsImlhdCI6MTYxMjIxNjUyM30.izDMwyU8L9DM1CqeFcjeiOqM5J5XsO66QACZFW0mAXQ')
-            .then(({ data }) => {
-                console.log(data)
-            })
-            .catch(err => console.log(err))
-    }
 
     const toggle = () => {
         setModal(!modal)

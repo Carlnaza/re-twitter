@@ -19,7 +19,8 @@ import {
 import '../../pages/non-global.css'
 
 
-export default function Sidebar() {
+export default function Sidebar(props) {
+
     return (
         <Col
             lg={3}
@@ -109,9 +110,17 @@ export default function Sidebar() {
                 <Button
                     className="mt-4 w-100 rounded-pill p-3 cs-tweet-btn"
                     color="primary"
+                    disabled={props.disabled ? true : false}
                 >
-                    Tweet
-            </Button>
+                    {props.disabled ?
+                        <>
+                            <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
+                            <span>Loading...</span>
+                        </>
+                        :
+                        <span>Tweet</span>
+                    }
+                </Button>
                 <Button
                     className="d-flex justify-content-around w-100 rounded-pill mt-auto mb-2 cs-user-btn"
                 >
