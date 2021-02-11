@@ -4,30 +4,89 @@ const passport = require('passport')
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
 const crypto = require('crypto')
+const { getgroups } = require('process')
 require('dotenv').config();
 
 // Login Route - Creates a session
-router.post('/users/login', (req, res) => {
+router.post('/users/login', async (req, res) => {
 
+    let errors = {}
     let lowCaseUName = req.body.username.toLowerCase()
+    let data = await User.authenticate()(lowCaseUName, req.body.password)
 
-    User.authenticate()(lowCaseUName, req.body.password, (err, user) => {
-        if (err) { res.json(err) }
-        // check if account has been verified
-        if (!user.isVerified) return res.json({ status: 401, type: 'not-verified', msg: 'Your account has not been verified.' });
+    if (!data.user) {
+        if (data.error.name.includes("Username")) {
+            errors.loginUsername = "Incorrect username."
+        } else {
+            errors.loginPassword = "Incorrect password."
+        }
+    }
 
-        res.json({
-            message: `Successfully logged in ${user.username}`,
-            token: jwt.sign({ id: user._id }, process.env.SECRET)
-        })
+    if (Object.keys(errors).length !== 0) {
+
+        res.json({ status: 400, data: errors })
+
+        return
+    }
+
+    res.json({
+        status: 200,
+        message: `Successfully logged in ${data.user.username}`,
+        token: jwt.sign({ id: data.user._id }, process.env.SECRET)
     })
 })
 
 
 // Registration Route
 router.post('/users/register', async (req, res) => {
+
+    let errors = {}
     let user
     let lowCaseUName = req.body.username.toLowerCase()
+    let nonViaChars = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/)
+
+    // Check if any of the inputs are empty
+    if (!req.body.username) {
+        errors.username = "A username is required to register."
+    } else if (nonViaChars.test(req.body.username)) {
+        errors.username = "Usernames cannot have special characters and spaces, please enter a new one."
+    }
+    if (!req.body.name) {
+        errors.name = "Please enter a valid name"
+    }
+    if (!req.body.phone || req.body.phone.length < 10) {
+        errors.phone = "Please enter a valid 10 digit phone number"
+    }
+    if (!req.body.email) {
+        errors.email = "An Email is required to register."
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(req.body.email)) {
+        errors.email = "Please enter a valid email address."
+    }
+    if (!req.body.password) {
+        errors.password = "Password is required"
+    } else if (req.body.password.length < 6) {
+        errors.password = "Password must be 6 characters or more."
+    }
+    if (!req.body.password2) {
+        errors.password2 = "Please repeat password."
+    } else if (req.body.password2 !== req.body.password) {
+        errors.password2 = "Password does not match."
+    }
+    if (!req.body.year) {
+        errors.year = "Birth Date is required to register."
+    } else if (new Date().getFullYear() - req.body.year < 13) {
+        errors.year = "You must be 13 years or older to register on this site."
+    }
+
+    // Stop route here if there are any empty inputs
+    if (Object.keys(errors).length !== 0) {
+
+        res.json({ status: 400, data: errors })
+
+        return
+    }
+
+
 
     try {
 
@@ -45,12 +104,25 @@ router.post('/users/register', async (req, res) => {
     } catch (err) {
 
         if (err.message.includes("username")) {
-            res.json({ error: "username", message: "A user with the given username is already registered. " })
-        } else if (err.message.includes("email")) {
-            res.json({ error: "email", message: "A user with the given email is already registered. " })
-        } else if (err.message.includes("phone")) {
-            res.json({ error: "phone", message: "A user with the given phone is already registered. " })
+            errors.username = err.message
         }
+        if (err.message.includes("email")) {
+            errors.email = "A user with the given email is already registered."
+        }
+        if (err.message.includes("phone")) {
+            errors.phone = "This phone number is already attached to a registered account."
+        }
+
+        if (Object.keys(errors).length !== 0) {
+
+            res.json({ status: 400, data: errors })
+
+            return
+
+        }
+
+        res.json(err)
+
 
     }
 

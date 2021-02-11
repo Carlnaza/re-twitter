@@ -1,4 +1,5 @@
 body {
+  background-color: #141d26 !important;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -32,9 +33,21 @@ h1, h2 {
 }
 
 .black {
-  background-color: black;
+  background-color: #141d26 !important;
 }
 
 .gray {
   background-color: #3E3E3E;
+}
+
+.whats-happening {
+  font-size: 54px !important;
+}
+
+.login-form {
+  width: 400px;
+}
+
+.login-btn {
+  height: 50px !important;
 }
