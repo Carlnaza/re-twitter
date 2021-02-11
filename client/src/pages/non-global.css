@@ -1,0 +1,68 @@
+.cs-sidebar {
+    height: 100vh;
+}
+
+.cs-content {
+    height: 100vh;
+    overflow: hidden;
+    border-left: 1px solid gray;
+    border-right: 1px solid gray;
+
+}
+
+.cs-announcement {
+    background-color: red;
+    height: 100vh;
+}
+
+.cs-btn {
+    font-size: 20px !important;
+    font-family: 'Fredoka One', cursive;
+    color: rgba(217,217,217,1.00) !important;
+    font-weight: bolder;
+    border-color: transparent !important;
+    background-color: transparent !important;
+}
+
+.cs-btn:hover {
+    color: rgba(29,161,242,1.00) !important;
+    background-color: rgb(29, 161, 242, 0.1) !important;
+}
+
+.cs-tweet-btn {
+    font-size: 22px;
+    font-family: 'Fredoka One', cursive !important;
+}
+
+.cs-username {
+    font-family: 'Fredoka One', cursive !important;
+}
+
+.cs-user-btn {
+    bottom: 0;
+    border-color: transparent !important;
+    background-color: transparent !important;
+}
+
+.cs-user-btn:hover {
+    background-color: rgb(29, 161, 242, 0.1) !important;
+}
+
+.cs-home-title {
+    font-size: 22px;
+}
+
+.cs-textarea {
+    color: white !important;
+    border-color: transparent !important;
+   background-color: #141d26 !important;
+}
+
+.cs-btn-default {
+    border-color: transparent !important;
+    background-color: transparent !important;
+}
+
+.cs-btn-default:hover {
+    background-color: rgb(29, 161, 242, 0.1) !important;
+}

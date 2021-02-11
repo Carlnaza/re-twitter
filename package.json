@@ -24,6 +24,9 @@
   },
   "homepage": "https://github.com/Carlnaza/re-twitter#readme",
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.34",
+    "@fortawesome/free-solid-svg-icons": "^5.15.2",
+    "@fortawesome/react-fontawesome": "^0.1.14",
     "concurrently": "^5.1.0",
     "crypto": "^1.0.1",
     "dotenv": "^8.2.0",

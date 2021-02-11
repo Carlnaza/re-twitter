@@ -99,10 +99,12 @@ const FormContext = () => {
         values,
         errors,
         disabled,
+        setDisabled,
         registerStatus,
         modal,
         setModal,
-        success
+        success,
+        setSuccess
     }
 }
 
