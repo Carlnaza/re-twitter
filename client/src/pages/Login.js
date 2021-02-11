@@ -13,11 +13,10 @@ import {
 } from 'reactstrap'
 
 // Utils
-import User from '../utils/User/UserAPI/UserAPI'
+import User from '../utils/UserAPI'
 import FormContext from '../utils/FormContext.js'
 
 export default function Login() {
-
 
     const {
         handleRegisterInputChange,

@@ -1,4 +1,4 @@
-import User from '../utils/User/UserAPI/UserAPI'
+import User from '../utils/UserAPI'
 
 // Library
 import {
