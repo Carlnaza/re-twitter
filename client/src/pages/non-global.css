@@ -66,3 +66,49 @@
 .cs-btn-default:hover {
     background-color: rgb(29, 161, 242, 0.1) !important;
 }
+
+label {
+    cursor: pointer;
+}
+
+#upload-photo {
+    opacity: 0;
+    position: absolute;
+    z-index: -1;
+    color: rgba(29,161,242,1.00) !important;
+ }
+
+ .cs-upload-img-svg {
+    color: rgba(29,161,242,1.00) !important;
+ }
+ 
+ .cs-pload-img-svg:hover {
+    background-color: rgb(29, 161, 242, 0.1) !important;
+ }
+
+ .cs-tweet-image-container {
+     color: black;
+ }
+
+ .cs-tweet-image {
+     width: 100%;
+     height: 300px;
+     object-fit: contain;
+     border-radius: 25px ;
+     -webkit-border-radius: 25px ;
+     -moz-border-radius: 25px ;
+     -ms-border-radius: 25px ;
+     -o-border-radius: 25px ;
+ }
+
+ .cs-tweet-exit {
+     border-color: transparent !important;
+     background-color: transparent !important;
+     position: absolute !important;
+     margin-top: 2%;
+     margin-left: 2%;
+ }
+
+ .cs-tweet-exit:hover {
+    color: rgba(29,161,242,1.00) !important;
+ }

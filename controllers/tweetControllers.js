@@ -55,4 +55,58 @@ router.get('/tweet/:id', async (req, res) => {
 
 })
 
+// Algorithm for Home Page
+router.get('/featured-tweets/', passport.authenticate("jwt"), async (req, res) => {
+
+    // let now = new Date()
+
+    // console.log(now.toDateString())
+    // console.log(now.getHours())
+
+    // let dateTweetMade
+    // let peopleFollowed = []
+    // let usersTweetsToday = []
+
+    // let myTweetsArr = []
+    // let usersFollowed = []
+    // // Tweets that are within 3 hours
+    // let sortedTweets = []
+
+    // let algoResult = {
+    //     allTweets: myTweetsArr,
+    //     allUsersFollowed: usersFollowed
+    // }
+
+    // try {
+
+    //     for (tweet of req.user.tweets) {
+
+    //         let tweetInfo = await Tweet.findById(tweet)
+    //         if (tweetInfo.created_at.toDateString())
+
+    //         myTweetsArr.push()
+
+    //     }
+
+    //     for (following of req.user.following) {
+    //         usersFollowed.push(await User.findById(following))
+    //     }
+
+    //     for (let i = 0; i < myTweetsArr; i++) {
+
+    //     }
+
+
+
+    // } catch (err) {
+    //     res.json(err)
+
+    //     return
+    // }
+
+    // res.json(algoResult)
+
+
+})
+
 module.exports = router

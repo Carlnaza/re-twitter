@@ -12,7 +12,6 @@ import NotFound from './pages/404.js'
 import EmailConfirm from './pages/EmailConfirm'
 
 
-// Library
 
 function App() {
 

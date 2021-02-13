@@ -20,7 +20,7 @@ export default function Login() {
     const {
         handleRegisterInputChange,
         handleLoginInputChange,
-        handleSubmit,
+        handleRegisterSubmit,
         handleLogin,
         loginValues,
         values,
@@ -227,7 +227,7 @@ export default function Login() {
                                     </Button> :
                                         <button
                                             className="btn btn-primary float-right rounded-pill"
-                                            onClick={() => handleSubmit()}
+                                            onClick={() => handleRegisterSubmit()}
                                             disabled={disabled ? true : false}>
                                             {disabled ?
                                                 <>

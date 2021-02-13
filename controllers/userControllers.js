@@ -272,7 +272,6 @@ router.put('/users/follow', passport.authenticate("jwt"), async (req, res) => {
 
 // Create a new Tweet
 router.post('/users/tweet', passport.authenticate("jwt"), async (req, res) => {
-
     let tweet
     let tweetObj = {
         message: req.body.message,
@@ -292,6 +291,7 @@ router.post('/users/tweet', passport.authenticate("jwt"), async (req, res) => {
     // length can be limited on front end using max length 280 on input 
     if (req.body.message.length > 280) {
         res.json({
+            status: 400,
             message: `Tweet must be 280 characters or less. (Currently: ${req.body.message.length})`
         })
 
@@ -305,8 +305,9 @@ router.post('/users/tweet', passport.authenticate("jwt"), async (req, res) => {
         tweet = await Tweet.create(tweetObj)
 
         // If there are images
-        if (req.body.images) {
-            await Tweet.findByIdAndUpdate(tweet._id, { $push: { images: { $each: req.body.images } } })
+        if (req.body.images !== "") {
+            console.log(req.body.images, "Here")
+            await Tweet.findByIdAndUpdate(tweet._id, { $push: { images:  req.body.images  } })
         }
 
         // Add's Tweet _id to User who created

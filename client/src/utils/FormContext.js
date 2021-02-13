@@ -3,12 +3,14 @@ import { useState } from 'react'
 // Utils
 import User from './UserAPI'
 import Tweet from './TweetAPI'
+import { app } from '../firebaseConfig.js'
 
 const FormContext = () => {
 
     const [tweet, setTweet] = useState({
-        input: '',
-        image: ''
+        message: '',
+        image: '',
+        imageFileName: ''
     })
 
     const [values, setValues] = useState({
@@ -42,11 +44,28 @@ const FormContext = () => {
     const handleRegisterInputChange = (event) => {
         setValues({ ...values, [event.target.name]: event.target.value })
     }
+
     const handleLoginInputChange = (event) => {
         setLoginValues({ ...loginValues, [event.target.name]: event.target.value })
     }
 
-    const handleSubmit = async () => {
+    const handleFileChange = async (event) => {
+        const randomizer = '1234567890'
+        let randomNum = ''
+
+        for (let i = 1; i < 4; i++) {
+            randomNum += randomizer[Math.floor(Math.random() * randomizer.length)]
+        }
+
+        const file = event.target.files[0]
+        const randomizedFileName = 'RT' + randomNum + file.name
+        const storageRef = app.storage().ref()
+        const fileRef = storageRef.child(randomizedFileName)
+        await fileRef.put(file)
+        setTweet({ ...tweet, imageFileName: randomizedFileName, image: await fileRef.getDownloadURL() })
+    }
+
+    const handleRegisterSubmit = async () => {
 
         let user = {
             username: values.username,
@@ -69,35 +88,49 @@ const FormContext = () => {
                 setErrors(response.data)
             } else if (response.status === 200) {
                 setErrors({})
+                setDisabled(false)
                 setModal(false)
                 setSuccess(true)
+                setValues({})
                 console.log(response)
             }
-        }, 1000)
+        }, 500)
 
     }
 
     const submitTweet = async () => {
         setDisabled(true)
 
-        setTimeout(async () => {
-            let { data: tweetRes } = await Tweet.submit(tweet.input)
-            if (tweetRes.status === 400) {
-                let errorObj = {
-                    tweetInput: tweetRes.message
-                }
-                setErrors(errorObj)
-                setDisabled(false)
-            } else if (tweetRes.status === 200) {
-                setDisabled(false)
-                setTweet({ input: '', image: '' })
-            }
-        }, 250)
+        let { data: tweetRes } = await Tweet.submit({
+            message: tweet.message,
+            images: tweet.image
+        })
 
+        if (tweetRes.status === 400) {
+            let errorObj = {
+                tweetInput: tweetRes.message
+            }
+            setErrors(errorObj)
+            setDisabled(false)
+        } else if (tweetRes.status === 200) {
+            setTweet({
+                message: '',
+                image: '',
+                imageFileName: ''
+            })
+            setDisabled(false)
+        }
+
+    }
+
+    const handleDeleteTweetImg = async () => {
+        console.log(tweet)
+        setTweet({ ...tweet, image: '', imageFileName: '' })
     }
 
     const handleLogin = async () => {
         if (!loginValues.isLogging) {
+            setSuccess(false)
             setLoginValues({ ...loginValues, isLogging: true })
         }
         if (loginValues.isLogging) {
@@ -112,9 +145,11 @@ const FormContext = () => {
                 setDisabled(false)
                 setErrors(loginInfo.data)
             } else if (loginInfo.status === 200) {
+                setDisabled(false)
                 setErrors({})
                 setSuccess(true)
                 setTimeout(() => {
+                    setSuccess(false)
                     window.location.replace("/")
                     localStorage.setItem("token", loginInfo.token)
                 }, 1000)
@@ -123,10 +158,12 @@ const FormContext = () => {
     }
 
     return {
+        handleFileChange,
         handleRegisterInputChange,
         handleLoginInputChange,
-        handleSubmit,
+        handleRegisterSubmit,
         handleLogin,
+        handleDeleteTweetImg,
         loginValues,
         values,
         errors,

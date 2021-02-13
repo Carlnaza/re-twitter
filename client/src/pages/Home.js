@@ -15,7 +15,8 @@ import {
 import './non-global.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-    faImage
+    faImage,
+    faTimesCircle
 } from '@fortawesome/free-solid-svg-icons'
 
 // Context
@@ -28,6 +29,8 @@ export default function Home() {
         disabled,
         errors,
         handleTweetInputChange,
+        handleDeleteTweetImg,
+        handleFileChange,
         tweet,
         submitTweet
     } = FormContext()
@@ -52,19 +55,28 @@ export default function Home() {
                             id="exampleFormControlTextarea1"
                             rows="3"
                             placeholder="What's happening?"
-                            name="input"
-                            value={tweet.input}
+                            name="message"
+                            value={tweet.message}
                             onChange={handleTweetInputChange}
                             disabled={disabled ? true : false}
                         />
+                        {tweet.image &&
+                            <div className="cs-tweet-image-container mt-2">
+                                <span className="cs-tweet-exit" onClick={() => handleDeleteTweetImg()}>
+                                    <FontAwesomeIcon icon={faTimesCircle} size="lg" />
+                                </span>
+                                <img className="cs-tweet-image" src={tweet.image} alt="test" />
+                            </div>
+                        }
                         <hr />
-                        <label for="upload-photo">
-                        <FontAwesomeIcon size="lg" icon={faImage} />
-
+                        <label htmlFor="upload-photo" className="cs-upload-img-svg rounded-circle p-1">
+                            <FontAwesomeIcon size="lg" icon={faImage} />
                         </label>
-                        <input type="file" name="photo" id="upload-photo" />
-                        <Button className="cs-btn-default rounded-circle">
-                        </Button>
+                        <input
+                            type="file"
+                            name="photo"
+                            id="upload-photo"
+                            onChange={handleFileChange} />
                         <Button
                             className="rounded-pill float-right"
                             color="primary"
