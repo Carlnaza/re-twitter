@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 
 // Library
 import {
@@ -18,8 +19,18 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import '../../pages/non-global.css'
 
+// Utils
+import UserContext from '../../utils/UserContext.js'
+
 
 export default function Sidebar(props) {
+
+    const { user, setUserOnLoad } = UserContext()
+
+    useEffect(() => {
+        setUserOnLoad(localStorage.getItem("token"))
+        // eslint-disable-next-line
+    }, [])
 
     return (
         <Col
@@ -129,8 +140,8 @@ export default function Sidebar(props) {
                             <FontAwesomeIcon icon={faUser} size="2x" />
                         </span>
                         <span className="mr-4">
-                            <span className="d-block cs-username">Carlo Nazareno</span>
-                            <span className="d-block text-muted">@carlnaza</span>
+                            <span className="d-block cs-username">{user.name}</span>
+                            <span className="d-block text-muted">@{user.username}</span>
                         </span>
                         <span>
                             <FontAwesomeIcon icon={faEllipsisH} />

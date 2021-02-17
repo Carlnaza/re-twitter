@@ -65,8 +65,8 @@ const FormContext = () => {
         setTweet({ ...tweet, imageFileName: randomizedFileName, image: await fileRef.getDownloadURL() })
     }
 
-    const handleRegisterSubmit = async () => {
-
+    const handleRegisterSubmit = async (e) => {
+        e.preventDefault()
         let user = {
             username: values.username,
             name: values.name,
@@ -98,7 +98,7 @@ const FormContext = () => {
 
     }
 
-    const submitTweet = async () => {
+    const submitTweet = async (e) => {
         setDisabled(true)
 
         let { data: tweetRes } = await Tweet.submit({
@@ -128,7 +128,8 @@ const FormContext = () => {
         setTweet({ ...tweet, image: '', imageFileName: '' })
     }
 
-    const handleLogin = async () => {
+    const handleLogin = async (e) => {
+        e.preventDefault()
         if (!loginValues.isLogging) {
             setSuccess(false)
             setLoginValues({ ...loginValues, isLogging: true })

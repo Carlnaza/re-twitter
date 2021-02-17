@@ -4,12 +4,19 @@
 
 .cs-content {
     height: 100vh;
-    overflow: hidden;
+    overflow: scroll;
     border-left: 1px solid gray;
     border-right: 1px solid gray;
-
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+    overflow-x: hidden; /* Hide horizontal scrollbar */
+    position: relative;
 }
 
+.cs-content::-webkit-scrollbar {
+    display: none;
+}
+  
 .cs-announcement {
     background-color: red;
     height: 100vh;
@@ -93,7 +100,7 @@ label {
  .cs-tweet-image {
      width: 100%;
      height: 300px;
-     object-fit: contain;
+     object-fit: cover;
      border-radius: 25px ;
      -webkit-border-radius: 25px ;
      -moz-border-radius: 25px ;
@@ -111,4 +118,51 @@ label {
 
  .cs-tweet-exit:hover {
     color: rgba(29,161,242,1.00) !important;
+ }
+
+ .cs-tweet-header {
+     height: 80px;
+ }
+
+ .cs-tweet-profile-photo {
+     height: 55px;
+     width: 55px;
+ }
+
+ .cs-tweet-container:hover {
+     cursor: pointer;
+    background-color: #111920;
+ }
+
+ .cs-tweet-btn-interact {
+     background-color: transparent !important;
+     border-color: transparent !important;
+ }
+
+ .cs-tweet-interact-section-reply:hover .cs-tweet-btn-reply {
+    color: #1DA1F2 !important;
+ }
+
+ .cs-tweet-interact-section-retweet:hover .cs-tweet-btn-retweet {
+    color: #3dd164 !important;
+ }
+
+ .cs-tweet-interact-section-like:hover .cs-tweet-btn-like {
+    color: #f22272 !important;
+ }
+
+ .cs-tweet-interact-section-reply:hover .cs-tweet-count-reply {
+    color: #1DA1F2 !important;
+ }
+
+ .cs-tweet-interact-section-retweet:hover .cs-tweet-count-retweet {
+    color: #3dd164 !important;
+ }
+
+ .cs-tweet-interact-section-like:hover .cs-tweet-count-like {
+    color: #f22272 !important;
+ }
+
+ .cs-tweet-separator {
+    background-color: #262626;
  }
