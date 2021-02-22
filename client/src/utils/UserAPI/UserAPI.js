@@ -8,14 +8,3 @@ const User = {
 }
 
 export default User
-
-
-
-
-
-
-
-
-
-
-axios.get(`/api/user-info`, { headers: { "Authorization": `Bearer ${token}` } })

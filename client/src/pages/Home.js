@@ -1,4 +1,4 @@
-
+import axios from 'axios'
 // Components
 import Sidebar from '../components/Sidebar'
 import Suggestionbar from '../components/Suggestionbar'
@@ -124,6 +124,12 @@ export default function Home() {
         }
     ]
 
+    axios.get('/api/all-users')
+        .then(data => {
+            console.log(data)
+        })
+        .catch(err => console.error(err))
+
     const TweetCard = (props) => {
 
         return (
@@ -136,7 +142,7 @@ export default function Home() {
                         <div>
                             <div>
                                 {/* <a href="#"> */}
-                                    <p className="d-inline text-white font-weight-bold">{props.title}</p>
+                                <p className="d-inline text-white font-weight-bold">{props.title}</p>
                                 {/* </a> */}
                                 <p className="d-inline text-muted ml-1">{props.handle}</p>
                             </div>

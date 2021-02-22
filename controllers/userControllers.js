@@ -133,52 +133,50 @@ router.post('/users/register', async (req, res) => {
     }
 
 
-    // if (user) {
-    //     console.log("User success")
+    if (user) {
+        console.log("User success")
 
-    //     // Create a verification token for this user
-    //     var token = await new VerifiedEmail({
-    //         userId: user._id,
-    //         token: crypto.randomBytes(16).toString('hex')
-    //     })
+        // Create a verification token for this user
+        var token = await new VerifiedEmail({
+            userId: user._id,
+            token: crypto.randomBytes(16).toString('hex')
+        })
 
-    //     // Save the verification token
-    //     token.save(function (err) {
-    //         if (err) { return res.status(500).send({ msg: err.message }); }
-    //     })
+        // Save the verification token
+        token.save(function (err) {
+            if (err) { return res.status(500).send({ msg: err.message }); }
+        })
 
-    //     // generate email to verify email
+        // generate email to verify email
 
-    //     let transporter = nodemailer.createTransport({
-    //         // set up email sender account
-    //         service: 'gmail',
-    //         auth: {
-    //             user: process.env.GMAIL_USER,
-    //             pass: process.env.GMAIL_PASSWORD
-    //         }
-    //     })
+        let transporter = nodemailer.createTransport({
+            // set up email sender account
+            service: 'gmail',
+            auth: {
+                user: process.env.GMAIL_USER,
+                pass: process.env.GMAIL_PASSWORD
+            }
+        })
 
-    //     let url = process.env.WHERE_EVER_WE_HOST_THIS_FROM || 'http://localhost:3000/verify/'
-    //     // email message content
-    //     var mailOptions = {
-    //         to: user.email, subject: 'Account Verification Token', text: `Hello, ${user.name}.  Welcome to re-twitter.  You are just one step away from joining the re-twitter universe.  Just click the link below and enter your password again.\n
-    //     \n
-    //     ${url}${token.token}\n
-    //     \n`
+        let url = process.env.WHERE_EVER_WE_HOST_THIS_FROM || 'http://localhost:3000/verify/'
+        // email message content
+        var mailOptions = {
+            to: user.email, subject: 'Account Verification Token', text: `Hello, ${user.name}.  Welcome to re-twitter.  You are just one step away from joining the re-twitter universe.  Just click the link below and enter your password again.\n
+        \n
+        ${url}${token.token}\n
+        \n`
 
-    //     }
+        }
 
-    //     transporter.sendMail(mailOptions, (err, response) => {
+        transporter.sendMail(mailOptions, (err, response) => {
 
-    //         if (err) throw err;
+            if (err) throw err;
 
-    //         res.json({
-    //             status: 200,
-    //             message: `Email has been sent to ${user.name} at ${user.email}`
-    //         })
-    //     })
-
-
+            res.json({
+                status: 200,
+                message: `Email has been sent to ${user.name} at ${user.email}`
+            })
+        })
 
     }
 })
