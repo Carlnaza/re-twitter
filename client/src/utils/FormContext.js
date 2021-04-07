@@ -13,6 +13,10 @@ const FormContext = () => {
         imageFileName: ''
     })
 
+    const [tweetState, setTweetState] = useState({
+        tweets: []
+    })
+
     const [values, setValues] = useState({
         username: '',
         name: '',
@@ -80,21 +84,29 @@ const FormContext = () => {
 
         setDisabled(true)
 
-        setTimeout(async () => {
-            let { data: response } = await User.register(user)
+        let { data: response } = await User.register(user)
 
-            if (response.status === 400) {
-                setDisabled(false)
-                setErrors(response.data)
-            } else if (response.status === 200) {
-                setErrors({})
-                setDisabled(false)
-                setModal(false)
-                setSuccess(true)
-                setValues({})
-                console.log(response)
-            }
-        }, 500)
+        if (response.status === 400) {
+            setDisabled(false)
+            setErrors(response.data)
+        } else if (response.status === 200) {
+            setErrors({})
+            setDisabled(false)
+            setModal(false)
+            setSuccess(true)
+            setValues({
+                username: '',
+                name: '',
+                email: '',
+                password: '',
+                password2: '',
+                phone: '',
+                day: 1,
+                month: 'January',
+                year: ''
+            })
+            console.log(response)
+        }
 
     }
 
@@ -106,6 +118,9 @@ const FormContext = () => {
             images: tweet.image
         })
 
+        let newTweet = [tweetRes.tweet, ...tweetState.tweets]
+        console.log(tweetRes)
+
         if (tweetRes.status === 400) {
             let errorObj = {
                 tweetInput: tweetRes.message
@@ -113,6 +128,7 @@ const FormContext = () => {
             setErrors(errorObj)
             setDisabled(false)
         } else if (tweetRes.status === 200) {
+            setTweetState({ ...tweetState, tweets: newTweet })
             setTweet({
                 message: '',
                 image: '',
@@ -158,6 +174,19 @@ const FormContext = () => {
         }
     }
 
+    const getAlgorithm = async (token) => {
+        let { data: featuredTweets } = await User.getFeatured(token)
+
+        if (featuredTweets.length > 0) {
+            setTweetState({ ...tweetState, tweets: featuredTweets })
+        } else {
+            let { data: userTweets } = await User.getUserRecent(token)
+
+            setTweetState({ ...tweetState, tweets: userTweets })
+        }
+
+    }
+
     return {
         handleFileChange,
         handleRegisterInputChange,
@@ -165,6 +194,8 @@ const FormContext = () => {
         handleRegisterSubmit,
         handleLogin,
         handleDeleteTweetImg,
+        getAlgorithm,
+        tweetState,
         loginValues,
         values,
         errors,

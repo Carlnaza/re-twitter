@@ -22,8 +22,7 @@ const TweetSchema = new Schema({
     }],
     retweeted_by: [{
         type: Schema.Types.ObjectId,
-        ref: 'user',
-        unique: true
+        ref: 'user'
     }],
     created_by: {
         type: Schema.Types.ObjectId,

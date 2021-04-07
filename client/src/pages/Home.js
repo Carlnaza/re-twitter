@@ -1,4 +1,5 @@
-import axios from 'axios'
+import { useEffect } from 'react'
+
 // Components
 import Sidebar from '../components/Sidebar'
 import Suggestionbar from '../components/Suggestionbar'
@@ -19,13 +20,15 @@ import {
     faTimesCircle,
     faComment,
     faRetweet,
-    faHeart
+    faHeart,
+    faUser
 } from '@fortawesome/free-solid-svg-icons'
 
 // Context
 import FormContext from '../utils/FormContext.js'
 
 // Images
+import userImg from '../images/user-img.png'
 import test from '../images/test.jpg'
 import test2 from '../images/test2.PNG'
 import logo from '../images/logo-test.gif'
@@ -40,12 +43,15 @@ export default function Home() {
         handleDeleteTweetImg,
         handleFileChange,
         tweet,
-        submitTweet
+        submitTweet,
+        tweetState,
+        getAlgorithm
     } = FormContext()
 
     const fakeData = [
         {
             handle: "@tweeter1",
+            username: "This Guy",
             title: "Fake Tweet 1",
             body: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.",
             image: test,
@@ -56,6 +62,7 @@ export default function Home() {
         },
         {
             handle: "@tweeter2",
+            username: "This Guy",
             title: "Fake Tweet 2",
             body: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.",
             profile: logo,
@@ -65,6 +72,7 @@ export default function Home() {
         },
         {
             handle: "@tweeter3",
+            username: "This Guy",
             title: "Fake Tweet 777777777 tucker sucks",
             body: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.",
             image: test,
@@ -75,6 +83,7 @@ export default function Home() {
         },
         {
             handle: "@tweeter4",
+            username: "This Guy",
             title: "Fake Tweet 4",
             body: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.",
             image: test2,
@@ -85,6 +94,7 @@ export default function Home() {
         },
         {
             handle: "@tweeter5",
+            username: "This Guy",
             title: "Fake Tweet 5",
             body: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.",
             image: test,
@@ -95,6 +105,7 @@ export default function Home() {
         },
         {
             handle: "@tweeter6",
+            username: "This Guy",
             title: "Fake Tweet 6",
             profile: logo,
             body: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.",
@@ -104,6 +115,7 @@ export default function Home() {
         },
         {
             handle: "@tweeter7",
+            username: "This Guy",
             title: "Fake Tweet 777777777 tucker sucks",
             body: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.",
             image: test,
@@ -114,6 +126,7 @@ export default function Home() {
         },
         {
             handle: "@tweeter8",
+            username: "This Guy",
             title: "Fake Tweet 8",
             body: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.",
             image: test2,
@@ -124,11 +137,9 @@ export default function Home() {
         }
     ]
 
-    axios.get('/api/all-users')
-        .then(data => {
-            console.log(data)
-        })
-        .catch(err => console.error(err))
+    useEffect(() => {
+        getAlgorithm(localStorage.getItem("token"))
+    }, [])
 
     const TweetCard = (props) => {
 
@@ -136,15 +147,23 @@ export default function Home() {
             <div className="cs-tweet-container">
                 <div className="border-bottom d-flex p-3 pl-1">
                     <Col lg={1} className="p-0 mr-2">
-                        <img src={props.profile} alt="logo" className="cs-tweet-profile-photo rounded-circle" />
+                        {
+                            props.profile ?
+                                <img src={props.profile} alt="logo" className="cs-tweet-profile-photo rounded-circle" />
+                                :
+                                <span className="rounded-cirlce">
+                                    <FontAwesomeIcon size="2x" icon={faUser} />
+                                </span>
+                        }
+
                     </Col>
                     <Col lg={11}>
                         <div>
                             <div>
                                 {/* <a href="#"> */}
-                                <p className="d-inline text-white font-weight-bold">{props.title}</p>
+                                <p className="d-inline text-white font-weight-bold">{props.title}{props.username}</p>
                                 {/* </a> */}
-                                <p className="d-inline text-muted ml-1">{props.handle}</p>
+                                <p className="d-inline text-muted ml-1">@{props.handle}</p>
                             </div>
                             <div>
                                 <p className="text-white">{props.body}</p>
@@ -244,21 +263,24 @@ export default function Home() {
                         <div className="border-bottom cs-tweet-separator p-1"></div>
                         {/* End Tweet Card Form */}
                         {/* Content */}
-                        {
-                            fakeData.map((info, i) =>
+                        {tweetState.tweets &&
+                            tweetState.tweets.map((info, i) =>
                                 <TweetCard
                                     key={i}
-                                    handle={info.handle}
-                                    profile={info.profile}
-                                    title={info.title}
-                                    body={info.body}
+                                    handle={info.created_by.username}
+                                    profile={info.created_by.profile_img}
+                                    title={info.created_by.name}
+                                    body={info.message}
                                     img={info.image}
-                                    comments={info.comments}
-                                    retweets={info.retweets}
-                                    likes={info.likes}
+                                    comments={info.replies}
+                                    retweets={info.retweeted_by}
+                                    likes={info.liked_by}
                                 />
                             )
+
                         }
+                        {tweetState.tweets && <div className="text-center text-white mt-2">There are no more tweets here.</div>}
+                        {!tweetState.tweets && <div className="text-center text-white mt-2">Theres no tweets! Tweet something or follow a user to see their tweets.</div>}
                         {/* End Content */}
                     </div>
                 </Col>

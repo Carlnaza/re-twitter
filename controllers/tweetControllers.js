@@ -62,6 +62,8 @@ router.get('/featured-tweets/', passport.authenticate("jwt"), async (req, res) =
     let allTweets = []
     let sortedByTodayTweets = []
     let followingUsersTweets = []
+    let allFollowingTweets = []
+    let userRecentTweets = []
 
     const dateSameDay = (firstDate, secondDate) => {
         return firstDate.getFullYear() === secondDate.getFullYear() &&
@@ -75,40 +77,42 @@ router.get('/featured-tweets/', passport.authenticate("jwt"), async (req, res) =
             (firstDate.getDate() - secondDate.getDate()) <= 2
     }
 
-    for (tweet of req.user.tweets) {
+    // for (tweet of req.user.tweets) {
 
-        try {
+    //     try {
 
-            let tweetData = await Tweet.findById(tweet)
-            allTweets.push(tweetData)
+    //         let tweetData = await Tweet.findById(tweet)
+    //         if (tweetData) {
+    //             allTweets.push(tweetData)
+    //         }
 
-        } catch (err) {
-            res.json(err)
+    //     } catch (err) {
 
-            return
-        }
+    //         res.json(err)
 
-    }
+    //         return
+    //     }
 
-    allTweets.sort((a, b) => b.created_at - a.created_at)
+    // }
 
-    for (tweet of allTweets) {
+    // allTweets.sort((a, b) => b.created_at - a.created_at)
 
-        if (dateSameDay(today, tweet.created_at)) {
-            sortedByTodayTweets.unshift(tweet)
-        } else if (datePastTwoDays(today, tweet.created_at)) {
-            sortedByTodayTweets.push(tweet)
-        }
+    // for (tweet of allTweets) {
 
-    }
+    //     if (dateSameDay(today, tweet.created_at)) {
+    //         sortedByTodayTweets.unshift(tweet)
+    //     } else if (datePastTwoDays(today, tweet.created_at)) {
+    //         sortedByTodayTweets.push(tweet)
+    //     }
+
+    // }
 
     for (followingUserID of req.user.following) {
 
         try {
 
             let data = await User.findById(followingUserID)
-
-            followingUsersTweets.push(data)
+            followingUsersTweets.push(data.tweets)
 
         } catch (err) {
             res.json(err)
@@ -118,11 +122,57 @@ router.get('/featured-tweets/', passport.authenticate("jwt"), async (req, res) =
 
     }
 
-    res.json({
-        myTweetsToday: sortedByTodayTweets,
-        peopleImFollowing: followingUsersTweets
-    })
+    for (following of followingUsersTweets) {
 
+        for (tweets of following) {
+
+            try {
+
+                let data = await Tweet.findById(tweets).populate({
+                    path: 'created_by',
+                    model: 'user'
+                })
+
+                if (datePastTwoDays(today, data.created_at)) {
+                    allFollowingTweets.push(data)
+                }
+
+            } catch (err) {
+                res.json(err)
+
+                return
+            }
+        }
+    }
+
+    allFollowingTweets.sort((a, b) => b.created_at - a.created_at)
+
+    res.json(allFollowingTweets)
+
+
+})
+
+// Get Users recent tweets past 2 dats
+router.get('/users-recent', passport.authenticate("jwt"), async (req, res) => {
+    let tweets = []
+    let today = new Date()
+
+    const datePastTwoDays = (firstDate, secondDate) => {
+        return firstDate.getFullYear() === secondDate.getFullYear() &&
+            firstDate.getMonth() === secondDate.getMonth() &&
+            (firstDate.getDate() - secondDate.getDate()) <= 1
+    }
+
+    for (tweet of req.user.tweets) {
+
+        let data = await Tweet.findById(tweet)
+        data.created_by = req.user
+        if (datePastTwoDays(today, data.created_at)) {
+            tweets.push(data)
+        }
+    }
+
+    res.json(tweets)
 
 })
 

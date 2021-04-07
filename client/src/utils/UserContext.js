@@ -7,6 +7,7 @@ const UserContext = () => {
 
     const [user, setUser] = useState({})
 
+
     const setUserOnLoad = async (token) => {
 
 
@@ -20,7 +21,13 @@ const UserContext = () => {
         window.location.replace('/login')
     }
 
-    return { user, setUserOnLoad, logout }
+    
+
+    return {
+        user,
+        setUserOnLoad,
+        logout
+    }
 }
 
 
