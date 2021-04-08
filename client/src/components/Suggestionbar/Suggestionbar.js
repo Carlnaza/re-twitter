@@ -18,10 +18,9 @@ export default function Suggestionbar() {
             className="cs-announcements"
             lg={3}
         >
-            <h1>Suggestions</h1>
             <Button
                 color="danger"
-                className="rounded-pill"
+                className="rounded-pill mt-5"
                 onClick={() => logout()}
             >Logout</Button>
         </Col>

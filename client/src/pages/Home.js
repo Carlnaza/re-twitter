@@ -21,7 +21,8 @@ import {
     faComment,
     faRetweet,
     faHeart,
-    faUser
+    faUser,
+    faCheckCircle
 } from '@fortawesome/free-solid-svg-icons'
 
 // Context
@@ -32,7 +33,6 @@ import userImg from '../images/user-img.png'
 import test from '../images/test.jpg'
 import test2 from '../images/test2.PNG'
 import logo from '../images/logo-test.gif'
-
 
 export default function Home() {
 
@@ -142,7 +142,6 @@ export default function Home() {
     }, [])
 
     const TweetCard = (props) => {
-
         return (
             <div className="cs-tweet-container">
                 <div className="border-bottom d-flex p-3 pl-1">
@@ -155,13 +154,16 @@ export default function Home() {
                                     <FontAwesomeIcon size="2x" icon={faUser} />
                                 </span>
                         }
-
                     </Col>
                     <Col lg={11}>
                         <div>
                             <div>
                                 {/* <a href="#"> */}
-                                <p className="d-inline text-white font-weight-bold">{props.title}{props.username}</p>
+                                <p className="d-inline text-white font-weight-bold">
+                                    {props.title}
+                                    {props.username}
+                                    {props.verified && <FontAwesomeIcon className="ml-1" color="Dodgerblue" icon={faCheckCircle} />}
+                                </p>
                                 {/* </a> */}
                                 <p className="d-inline text-muted ml-1">@{props.handle}</p>
                             </div>
@@ -264,17 +266,18 @@ export default function Home() {
                         {/* End Tweet Card Form */}
                         {/* Content */}
                         {tweetState.tweets &&
-                            tweetState.tweets.map((info, i) =>
+                            tweetState.tweets.map((info) =>
                                 <TweetCard
-                                    key={i}
+                                    key={info._id}
                                     handle={info.created_by.username}
                                     profile={info.created_by.profile_img}
                                     title={info.created_by.name}
                                     body={info.message}
-                                    img={info.image}
+                                    img={info.images[0]}
                                     comments={info.replies}
                                     retweets={info.retweeted_by}
                                     likes={info.liked_by}
+                                    verified={info.created_by.verified}
                                 />
                             )
 

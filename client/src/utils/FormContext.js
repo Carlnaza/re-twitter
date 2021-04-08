@@ -176,12 +176,12 @@ const FormContext = () => {
 
     const getAlgorithm = async (token) => {
         let { data: featuredTweets } = await User.getFeatured(token)
+        let { data: userTweets } = await User.getUserRecent(token)
 
         if (featuredTweets.length > 0) {
-            setTweetState({ ...tweetState, tweets: featuredTweets })
+            let allTweets = [...featuredTweets, ...userTweets]
+            setTweetState({ ...tweetState, tweets: allTweets })
         } else {
-            let { data: userTweets } = await User.getUserRecent(token)
-
             setTweetState({ ...tweetState, tweets: userTweets })
         }
 

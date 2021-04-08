@@ -172,6 +172,9 @@ router.get('/users-recent', passport.authenticate("jwt"), async (req, res) => {
         }
     }
 
+   tweets.sort((a, b) => b.created_at - a.created_at)
+
+
     res.json(tweets)
 
 })

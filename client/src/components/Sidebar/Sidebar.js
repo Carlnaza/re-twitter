@@ -15,7 +15,8 @@ import {
     faListAlt,
     faUser,
     faInfoCircle,
-    faEllipsisH
+    faEllipsisH,
+    faCheckCircle
 } from '@fortawesome/free-solid-svg-icons'
 import '../../pages/non-global.css'
 
@@ -35,11 +36,13 @@ export default function Sidebar(props) {
     return (
         <Col
             lg={3}
+            className="cs-sidebar-container"
         >
             <div className="d-flex align-items-start flex-column cs-sidebar">
                 <img src="http://assets.stickpng.com/thumbs/580b57fcd9996e24bc43c53e.png" height={75} width={75} alt="logo" />
                 <Button
                     className="mb-3 cs-btn rounded-pill"
+                    onClick={() => window.location.replace('/home')}
                 >
                     <span className="text-center">
                         <FontAwesomeIcon icon={faHome} />
@@ -50,73 +53,80 @@ export default function Sidebar(props) {
                 </Button>
                 <Button
                     className="mb-3 cs-btn rounded-pill"
+                    disabled
                 >
                     <span className="text-center">
                         <FontAwesomeIcon icon={faHashtag} />
                     </span>
                     <span className="ml-4">
                         Explore
-                </span>
+                    </span>
                 </Button>
                 <Button
                     className="mb-3 cs-btn rounded-pill"
+                    disabled
                 >
                     <span className="text-center">
                         <FontAwesomeIcon icon={faBell} />
                     </span>
                     <span className="ml-4">
                         Notifications
-                </span>
+                    </span>
                 </Button>
                 <Button
                     className="mb-3 cs-btn rounded-pill"
+                    disabled
                 >
                     <span className="text-center">
                         <FontAwesomeIcon icon={faEnvelope} />
                     </span>
                     <span className="ml-4">
                         Messages
-                </span>
+                    </span>
                 </Button>
                 <Button
                     className="mb-3 cs-btn rounded-pill"
+                    disabled
                 >
                     <span className="text-center">
                         <FontAwesomeIcon icon={faBookmark} />
                     </span>
                     <span className="ml-4">
                         Bookmarks
-                </span>
+                    </span>
                 </Button>
                 <Button
                     className="mb-3 cs-btn rounded-pill"
+                    disabled
                 >
                     <span className="text-center">
                         <FontAwesomeIcon icon={faListAlt} />
                     </span>
                     <span className="ml-4">
                         Lists
-                </span>
+                    </span>
                 </Button>
                 <Button
                     className="mb-3 cs-btn rounded-pill"
+                    disabled
                 >
                     <span className="text-center">
                         <FontAwesomeIcon icon={faUser} />
                     </span>
                     <span className="ml-4">
                         Profile
-                </span>
+                    </span>
                 </Button>
                 <Button
                     className="mb-4 cs-btn rounded-pill"
+                    disabled
                 >
                     <span className="text-center">
                         <FontAwesomeIcon icon={faInfoCircle} />
                     </span>
                     <span className="ml-4">
                         More
-                </span>
+                    </span>
                 </Button>
                 <Button
                     className="mt-4 w-100 rounded-pill p-3 cs-tweet-btn"
@@ -136,11 +146,18 @@ export default function Sidebar(props) {
                     className="d-flex justify-content-around w-100 rounded-pill mt-auto mb-2 cs-user-btn"
                 >
                     <span className="d-flex">
-                        <span className="pt-2 mr-2">
-                            <FontAwesomeIcon icon={faUser} size="2x" />
+                        <span className="pt-1 mr-2">
+                        {
+                            user.profile_img ?
+                                <img src={user.profile_img} alt={user.name+" re-twitter"} className="cs-tweet-profile-photo rounded-circle" />
+                                :
+                                <span className="rounded-cirlce">
+                                    <FontAwesomeIcon size="2x" icon={faUser} />
+                                </span>
+                        }
                         </span>
-                        <span className="mr-4">
-                            <span className="d-block cs-username">{user.name}</span>
+                        <span className="mr-2 mt-2">
+                            <span className="cs-username text-truncate">{user.name}{user.verified && <FontAwesomeIcon className="ml-1" color="Dodgerblue" icon={faCheckCircle} />}</span>
                             <span className="d-block text-muted">@{user.username}</span>
                         </span>
                         <span>

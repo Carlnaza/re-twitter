@@ -11,14 +11,10 @@ import Register from './pages/Register.js'
 import NotFound from './pages/404.js'
 import EmailConfirm from './pages/EmailConfirm'
 
-
-
 function App() {
-
   return (
     <div>
       {/* Navbar */}
-
 
       {/* Navbar end */}
       <Switch>
